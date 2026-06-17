@@ -1,0 +1,29 @@
+# app/views/users/index.xlsx.caxlsx
+wb = xlsx_package.workbook
+
+sheet_name =
+  if defined?(@parent) && @parent.is_a?(Organisation)
+    "Contacts for #{@parent.name}"
+  else
+    "Users"
+  end
+
+wb.add_worksheet(name: sheet_name) do |sheet|
+  sheet.add_row ["ID", "Name", "Email", "Role Types", "Country", "Contact Permission", "Created At"]
+
+  @items.each do |u|
+    name       = (u.respond_to?(:name) ? u.name : [u.first_name, u.last_name].compact.join(" "))
+    roles      = u.respond_to?(:user_role_types) ? u.user_role_types.map(&:name).join(", ") : ""
+    permission = u.is_contact_restricted ? "Closed" : "Open"
+
+    sheet.add_row [
+      u.id,
+      name,
+      u.email,
+      roles,
+      u.country,
+      permission,
+      u.created_at&.to_date
+    ]
+  end
+end

@@ -1,0 +1,59 @@
+-# locals: (edit: true) -->
+
+= simple_form_for(@item) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .row
+    .col-md-12
+      .float-end
+        - @item.class.sub_records.each do |sub_record|
+          = link_to sub_record.titleize, polymorphic_path([@item, sub_record.to_sym])
+
+        = render 'form_buttons', f: f, edit: edit
+
+      %h1
+        = @item.name&.titleize
+
+  - ff = form_fields_for(@item)
+  .form-inputs
+    .row
+      .col-md-4
+        = f.input :name, disabled: !edit
+      .col-md-4
+        = f.input :expedition_type,
+                    collection: ff['expedition_type']['collection'],
+                    label: 'Type',
+                    input_html: { class: 'autosubmit' },
+                    disabled: !edit
+      .col-md-4
+        = f.input :expedition_status_type,
+                   collection: Choice.select_options_for("expedition_status_type_#{@item.expedition_type}"),
+                   label: 'Status',
+                   disabled: !edit
+    .row
+      .col-md-4
+        = f.input :start_date, as: 'timepicker', disabled: !edit
+      .col-md-4
+        = f.input :end_date, as: 'timepicker', disabled: !edit
+      .col-md-4
+        = f.input :funded_amount, disabled: !edit
+    = render "form_#{@item.expedition_type}_fields", f: f
+    .row
+      .col-md-8
+        = f.input :description, as: :html, disabled: !edit
+      -# .col-md-4
+      -#   .form-label Status
+      -#   = f.input :is_active, label: 'Active?', disabled: !edit
+      -#   = f.input :is_marketing_completed, label: 'Marketing Completed?', disabled: !edit
+      -#   = f.input :is_platform_created, label: 'Platform Created?', disabled: !edit
+      -#   = f.input :is_ip_agreement_signed, label: 'IP Agreement Signed?', disabled: !edit
+      -#   = f.input :is_impact_survey_completed, label: 'Impact Survey Completed?', disabled: !edit
+      -#   = f.input :is_member_agreement_completed, label: 'Member Agreement Completed?', disabled: !edit
+
+
+
+
+
+
+

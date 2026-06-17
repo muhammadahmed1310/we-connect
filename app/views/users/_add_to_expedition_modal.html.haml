@@ -1,0 +1,52 @@
+- selected_ids ||= ''
+- parent ||= @parent
+- is_expedition_context = parent.is_a?(Expedition)
+- role_choices = Choice.find_by(name: "expedition_role_type")&.choice_items || []
+- expeditions ||= Expedition.where(is_skeleton: false) # leave as fallback
+- users_not_in_expedition = User.where.not(id: parent.users.select(:id)) if is_expedition_context
+- puts "Expeditions in modal: #{expeditions&.map(&:name)}"
+- if is_expedition_context && parent.present?
+  = form_with model: ExpeditionUser.new, url: expedition_users_path(@parent), method: :post, local: true do |f|
+    = f.hidden_field :expedition_id, value: @parent.id
+
+    .mb-3
+      = f.label :user_id, "Select User"
+      = f.select :user_id,
+          options_from_collection_for_select(users_not_in_expedition, :id, ->(u) { u.name }),
+          {},
+          class: "form-select"
+
+    .mb-3
+      = f.label :expedition_role_type, "Select Expedition Role"
+      = f.select :expedition_role_type,
+    options_for_select(role_choices.map { |r| [camel_label(r.name), r.name] }),
+    {},
+    class: "form-select"
+
+    .modal-footer
+      %button.btn.btn-secondary{ data: { bs_dismiss: "modal" } } Cancel
+      = f.submit "Add User", class: "btn btn-primary"
+
+- else
+  = form_with url: controller.bulk_action_path, method: :post, local: true do |f|
+    = hidden_field_tag :bulk_action, 'add_to_expedition_confirm'
+    - Array.wrap(selected_ids).each do |id|
+      = hidden_field_tag 'selected_ids[]', id
+
+    .mb-3
+      = f.label :expedition_id, "Select Expedition"
+      = f.select :expedition_id,
+          options_from_collection_for_select(expeditions, :id, :name),
+          {},
+          class: "form-select"
+
+    .mb-3
+      = f.label :role, "Select Expedition Role"
+      = f.select :expedition_role_type,
+    options_for_select(role_choices.map { |r| [camel_label(r.name), r.name] }),
+    {},
+    class: "form-select"
+
+    .modal-footer
+      %button.btn.btn-secondary{ data: { bs_dismiss: "modal" } } Cancel
+      = f.submit "Add Users", class: "btn btn-primary"

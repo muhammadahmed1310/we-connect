@@ -1,0 +1,51 @@
+//admin/control_panel/_logs
+
+%table.table
+  %thead
+    %tr
+      %th Time
+      %th User
+      %th Action
+      %th Item
+      %th Details
+      %th View
+  %tbody
+    - @versions.each do |v|
+      - user = User.find_by(id: v.whodunnit)
+      - label = v.event.titleize
+      - label = 'Delete' if v.event == 'destroy'
+      - readable_name ="#{v.item_type}"
+      - parsed_object = JSON.parse(v.object || '{}') rescue {}
+      %tr
+        %td= v.created_at.in_time_zone('Europe/London').strftime('%Y-%m-%d %H:%M')
+        %td= user&.name || 'System'
+        %td= label
+        %td= readable_name
+        %td
+          - if v.event == 'create'
+            = "Created:  #{v.item.try(:name) || v.item_id}"
+          - elsif v.event == 'update'
+            - begin
+              - summary = v.respond_to?(:changeset) && v.changeset.present? ? v.changeset.map { |k, (from, to)| "#{k.humanize}: “#{from}” → “#{to}”" }.join(', ') : nil
+              = summary.presence || 'No field changes'
+            - rescue
+              %span.text-danger Error generating summary
+          - elsif v.event == 'destroy' || v.event == 'delete'
+            - begin
+              - obj_data = v.object.present? ? (YAML.safe_load(v.object) rescue JSON.parse(v.object)) : {}
+              - parsed_name = obj_data['name'] || "User ##{v.item_id}"
+            - rescue
+              - parsed_name = "User ##{v.item_id}"
+            = "Deleted: #{parsed_name}"
+          - else
+            = parsed_object['action'].to_s.humanize
+        %td
+          - if v.event.start_with?('bulk_') && v.event != 'bulk_export'
+            = link_to 'View Changes', bulk_version_path(v), class: 'btn btn-outline-secondary btn-sm'
+          - elsif v.event == 'update' || v.event == 'destroy'
+            = link_to 'View Changes', bulk_show_version_path(v), class: 'btn btn-outline-secondary btn-sm'
+
+%p= "Total Logs: #{@versions.total_entries}"
+.text-center.mt-3
+  = will_paginate @versions
+

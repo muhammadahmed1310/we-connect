@@ -1,0 +1,29 @@
+.row
+  .col-md-12
+    %h1
+      .float-end.revert
+        = link_to 'Back to current version', item_path(@item)
+      = 'Versions for ' + @item.class.name
+      = "id: #{@item.id} "
+
+
+.row
+  .col-md-12
+    %table.table
+      %tr
+        %th When
+        %td What
+        %td Who
+        %td Version ID
+        %td Show
+
+      - @versions.each do |v|
+        %tr
+          %td= v.created_at
+          %td= v.event
+          %td= User.find_by_id(v.whodunnit).name if v.whodunnit
+          %td= v.id
+          %td
+            - if v.event != 'create'
+              = link_to("View item before change", version_path(@item, v))
+

@@ -1,0 +1,43 @@
+// versions/show
+- if @item.present?
+  %h2 Change Details for "#{@item.class.name} #{@item.try(:name)} ##{@item.try(:id)}"
+
+  - changeset = (@version.try(:object_changes) || @version.try(:changeset))
+  - if changeset.blank?
+    %p No changes recorded.
+  - elsif changeset.is_a?(Hash) && changeset.values.first.is_a?(Array)
+    %table.table.table-bordered
+      %thead
+        %tr
+          %th Field
+          %th Before
+          %th After
+      %tbody
+        - changeset.each do |field, (before, after)|
+          %tr
+            %td= field.titleize
+            %td= Array(before).join(', ').presence || "—"
+            %td= Array(after).join(', ').presence || "—"
+  - elsif changeset.is_a?(Hash)
+    %table.table.table-bordered
+      %thead
+        %tr
+          %th ID
+          %th Name
+          %th Field
+          %th Before
+          %th After
+      %tbody
+        - changeset.each do |id, entity_changes|
+          - if entity_changes.is_a?(Hash)
+            - name = entity_changes['name'] || entity_changes[:name] || "N/A"
+            - entity_changes.each do |field, (before, after)|
+              - next if field == 'name' # Skip name if already displayed
+              %tr
+                %td= id
+                %td= name
+                %td= field.titleize
+                %td= Array(before).join(', ').presence || "—"
+                %td= Array(after).join(', ').presence || "—"
+- else
+  %p.text-muted This item no longer exists, but you can still view its change history below.

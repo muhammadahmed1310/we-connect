@@ -1,0 +1,29 @@
+- modal_id = 'new-organisation-modal'
+
+/ modal hosts no controller; the form-group owns org-select
+%div.modal.fade{ id: modal_id, tabindex: "-1",
+                 aria: { hidden: true, labelledby: "#{modal_id}-label" } }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title{ id: "#{modal_id}-label" } Add new organisation
+        %button.btn-close{ type: "button", data: { "bs-dismiss": "modal" }, aria: { label: "Close" } }
+
+      .modal-body
+        .mb-2
+          %label.form-label Organisation name
+          %input.form-control{ type: "text", data: { "org-select-target": "nameInput" } }
+
+        .mb-2
+          %label.form-label Type
+          = select_tag :organisation_type,
+              options_from_collection_for_select(Choice.select_options_for("organisation_type", raw: true), :name, :name),
+              include_blank: true,
+              class: "form-select",
+              data: { "org-select-target": "typeInput" }
+
+        %div.text-danger.small.mt-1.d-none{ id: "#{modal_id}-error" }
+
+      .modal-footer
+        %button.btn.btn-secondary{ type: "button", data: { "bs-dismiss": "modal" } } Cancel
+        %button.btn.btn-primary{ type: "button", data: { action: "click->org-select#createOrg" } } Create

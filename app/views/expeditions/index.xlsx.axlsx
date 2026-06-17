@@ -1,0 +1,18 @@
+# app/views/expeditions/index.xlsx.caxlsx
+
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "#{controller_name.titleize}") do |sheet|
+  sheet.add_row ["ID", "Name", "Type", "Phase", "Start Date", "End Date", "Funding", "Progress"]
+  @items.each do |expedition|
+    sheet.add_row [
+      expedition.id,
+      expedition.name,
+      expedition.expedition_type,
+      expedition.expedition_phase_type,
+      expedition.start_date,
+      expedition.end_date,
+      expedition.funded_amount,
+      expedition.progress
+    ]
+  end
+end

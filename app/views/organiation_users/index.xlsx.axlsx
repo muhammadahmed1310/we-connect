@@ -1,0 +1,6 @@
+xlsx_package.workbook.add_worksheet(name: "#{controller_name.titleize}") do |sheet|
+  sheet.add_row ["ID", "Name", "Organisation"]
+  @items.each do |user|
+    sheet.add_row [user.id, user.user.name, user.organisation.name]
+  end
+end

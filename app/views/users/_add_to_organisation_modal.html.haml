@@ -1,0 +1,35 @@
+//app/views/users/_add_to_organisation_modal.html.haml
+- if parent.is_a?(Organisation)
+  %div.p-3
+    %h5.mb-3 Add users to #{parent.name}
+    = form_with url: controller.bulk_action_path, method: :post do
+      = hidden_field_tag :bulk_action, 'add_to_organisation_confirm'
+      = hidden_field_tag :organisation_id, parent.id
+
+      .mb-3
+        = label_tag 'selected_ids[]', 'Users'
+        - existing_user_ids = parent.users.pluck(:id)
+        - available_users = User.where.not(id: existing_user_ids).order(:first_name, :last_name)
+        = select_tag 'selected_ids[]',
+                     options_from_collection_for_select(available_users, :id, :name),
+                     multiple: true,
+                     class: 'form-select',
+                     data: { controller: 'tom-select', placeholder: 'Choose users...' }
+
+      .text-end
+        = submit_tag 'Add', class: 'btn btn-primary btn-sm'
+- else
+  %div.p-3
+    %h5.mb-3 Add users to an organisation
+    = form_with url: controller.bulk_action_path, method: :post do
+      = hidden_field_tag :bulk_action, 'add_to_organisation_confirm'
+      = hidden_field_tag :selected_ids, selected_ids
+      .mb-3
+        = label_tag :organisation_id, 'Organisation'
+        = select_tag :organisation_id,
+                     options_from_collection_for_select(organisations, :id, :name),
+                     include_blank: 'Choose...',
+                     class: 'form-select',
+                     data: { controller: 'tom-select' }
+      .text-end
+        = submit_tag 'Add', class: 'btn btn-primary btn-sm'

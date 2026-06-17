@@ -1,0 +1,7 @@
+//views/application/show.html.haml
+.container
+  = render 'form', item: @item, parent: @parent, edit: false
+  = turbo_frame_tag 'password-modal', data: { controller: 'modal' }
+
+
+

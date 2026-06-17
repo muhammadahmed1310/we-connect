@@ -1,0 +1,28 @@
+//application/index_buttons
+.float-end.pe-3
+  %button.btn.btn-outline-primary.btn-sm{ data: { bs_toggle: 'modal', bs_target: '#filterModal' }, type: "button" }
+    Add Filters
+
+- unless index_action_menu.empty?
+  .float-end.ps-3
+    .dropdown
+      %button.btn.btn-light.btn-sm.dropdown-toggle{ type: "button", id: "dropdownMenuButton", data: { bs_toggle: "dropdown" } }
+        Actions
+      %ul.dropdown-menu{ aria: { labelledby: "dropdownMenuButton" } }
+        - index_action_menu.each do |entry|
+          %li
+            - if entry[:partial]
+              %a.dropdown-item{href: "#",
+                data: {
+                  bs_toggle: "modal",
+                  bs_target: "##{entry[:id]}"
+                }
+              }= entry[:label]
+            - else
+              %a.dropdown-item{href: entry[:url] || "#",
+                method: entry[:method] || :post,
+                data: entry[:data]
+              }= entry[:label]
+
+.float-end.ps-2
+  = render 'application/records_badge', total: @total_count.to_i

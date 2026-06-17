@@ -1,0 +1,2 @@
+class ExpeditionPhasesController < WeHubController
+end

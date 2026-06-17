@@ -1,0 +1,3 @@
+class SurveyPagesController < WeHubController
+
+end

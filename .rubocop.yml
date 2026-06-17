@@ -1,0 +1,181 @@
+inherit_from: .rubocop_todo.yml
+
+require: rubocop-rails
+
+##################### Metrics ##################################
+
+Metrics/AbcSize:
+  Max: 200
+Metrics/BlockNesting:
+  Max: 5
+Metrics/ClassLength:
+  CountComments: false  # count full line comments?
+  Max: 2000
+Metrics/ModuleLength:
+  CountComments: false  # count full line comments?
+  Max: 1000
+Metrics/CyclomaticComplexity:
+  Max: 45
+Metrics/PerceivedComplexity:
+  Max: 45
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 300
+Metrics/ParameterLists:
+  Max: 10
+  CountKeywordArgs: true
+  MaxOptionalParameters: 4
+Metrics/BlockLength:
+  Max: 60
+
+##################### Layout ##################################
+
+Layout/LineLength:
+  Max: 100
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+  EnforcedStyleForEmptyBraces: no_space
+  SpaceBeforeBlockParameters: true
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+  EnforcedStyleForEmptyBraces: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
+
+
+##################### Lint ##################################
+
+Lint/RescueException:
+  Enabled: false
+
+##################### Naming ##################################
+
+Naming/AccessorMethodName:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false
+Naming/MethodParameterName:
+  Enabled: false
+# turned off because it was removing the is_, has_ etc. from method calls
+Naming/PredicateName:
+  Enabled: false
+
+
+##################### Style ##################################
+
+Style/CollectionMethods:
+  PreferredMethods:
+    collect: 'collect'
+    collect!: 'collect!'
+    inject: 'reduce'
+    detect: 'detect'
+    find_all: 'select'
+    enabled: true
+Style/RegexpLiteral:
+  EnforcedStyle: slashes
+  SupportedStyles:
+    - slashes
+    - percent_r
+    - mixed
+  AllowInnerSlashes: false
+Style/BeginBlock:
+  Enabled: false
+Style/LineEndConcatenation:
+  Enabled: false
+Style/NegatedIf:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+# turned off because it was corrupting the grpc map handling
+Style/HashEachMethods:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/TernaryParentheses:
+  Enabled: false
+# crashing on autocorrect
+Style/EmptyElse:
+  Enabled: false
+  EnforcedStyle: both
+  SupportedStyles:
+    - empty
+    - nil
+    - both
+Style/MutableConstant:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: ruby19
+  EnforcedShorthandSyntax: never
+Style/GuardClause:
+  Enabled: false
+Style/MissingElse:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/SoleNestedConditional:
+  Enabled: false
+Style/NumericPredicate:
+  Enabled: false
+Style/SymbolProc:
+  Enabled: false
+Style/CombinableLoops:
+  Enabled: false
+Style/EvalWithLocation:
+  Enabled: false
+Style/DocumentDynamicEvalDefinition:
+  Enabled: false
+
+##################### Security ##################################
+
+Security/Eval:
+  Enabled: false
+
+##################### Rails ##################################
+
+Rails/TimeZone:
+  Enabled: false
+Rails/Output:
+  Enabled: false
+Rails/HelperInstanceVariable:
+  Enabled: false
+Rails/I18nLocaleTexts:
+  Enabled: false
+Rails/InverseOf:
+  Enabled: false
+Rails/Present:
+  Enabled: false
+
+AllCops:
+  NewCops: enable
+  Include:
+    - Rakefile
+    - config.ru
+    - app/**/*.rb
+    - lib/**/*.rb
+  Exclude:
+    - 'lib/tasks/**/*'
+    - 'doc/**/*'
+    - 'bin/**/*'

@@ -1,0 +1,5 @@
+
+.container
+  = render 'form', item: @item, parent: @parent, edit: true
+  = turbo_frame_tag 'password-modal'
+

@@ -1,0 +1,52 @@
+.row.mb-3.d-flex.justify-content-between.align-items-center
+  .d-flex.gap-2.align-items-center
+    - if index_search?
+      = form_tag(items_path, method: :get, class: "form-inline") do
+        .input-group.input-group-sm
+          %input.form-control{placeholder: "Search", type: "search", id: "q", name: "q", value: params[:q]}
+          %button.btn.btn-secondary{type: "submit"}
+            %i.bs-icon.bi.bi-search
+
+.row
+  - if bulk_action_route_defined?
+    = form_with url: controller.bulk_action_path,
+            method: :post,
+            local: true,
+            id: "bulk-action-form",
+            data: { turbo: false, controller: "bulk-action" } do
+      = hidden_field_tag :bulk_action, nil, id: "bulk_action_field"
+
+      .row
+        = render 'index_header', title: @title, parent: @parent
+      .row
+        .col-md-12
+          = render 'table', tf: table_fields_for(controller.model), items: @items
+
+
+.row
+  - if join_table? && @parent.present?
+    - model_instance = controller.model.new
+    - form_url = polymorphic_path([@parent, model_instance])
+    = render 'modal', title: "Add #{controller_name.singularize} to #{@parent.name}", id: 'newAssoc' do
+      = simple_form_for(model_instance, url: form_url) do |f|
+        - form_fields_for(model_instance).values.each do |ff|
+          - next if ff['name'] == parent_id_field_name
+          = f.input ff['name'], label: ff['label'], collection: ff['collection']
+        = f.hidden_field parent_id_field_name, value: @parent.id
+        .text-right
+          = f.submit 'Save', class: 'btn btn-primary btn-sm'
+
+
+
+-# - unless index_action_menu.empty?
+-#   - index_action_menu.each do |action|
+-#     - if action[:partial]
+-#       = render 'modal', title: action[:label], id: action[:id] do
+-#         = render action[:partial], locals: { selected_ids: '', parent: @parent }
+- index_action_menu.each do |entry|
+  - if entry[:partial]
+    = render partial: 'modal', locals: {title: entry[:label],
+      id: entry[:id],
+      body_partial: entry[:partial],
+      body_locals: entry[:locals] || {}}
+

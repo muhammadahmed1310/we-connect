@@ -1,0 +1,21 @@
+- unless index_action_menu.empty?
+  .float-end.ps-3
+    .dropdown
+      %button.btn.btn-light.btn-sm.dropdown-toggle{ type: "button", id: "dropdownMenuButton", data: { bs_toggle: "dropdown" } }
+        Actions
+      %ul.dropdown-menu{ aria: { labelledby: "dropdownMenuButton" } }
+        - index_action_menu.each do |entry|
+          %li
+            - if entry[:partial]
+              %a.dropdown-item{href: "#",
+                data: {
+                  bs_toggle: "modal",
+                  bs_target: "##{entry[:id]}"
+                }
+              }= entry[:label]
+            - else
+              = button_tag entry[:label],
+                  type: 'button',
+                  class: 'dropdown-item',
+                  data: entry[:data]
+

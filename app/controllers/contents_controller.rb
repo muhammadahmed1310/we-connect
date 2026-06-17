@@ -1,0 +1,3 @@
+class ContentsController < WeHubController
+
+end

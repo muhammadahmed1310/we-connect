@@ -1,0 +1,41 @@
+%nav.navbar.navbar-expand-lg.navbar-light
+  .container-fluid
+    %a.navbar-brand{:href => root_path}
+      = image_tag "we.png", alt: "WomenEmerging", width: "50", height: "50"
+    %button.navbar-toggler{data: {"bs-toggle" => "collapse", "bs-target" => "#navbarNav"}}
+      %span.navbar-toggler-icon
+    #navbarNav.collapse.navbar-collapse
+      - if current_user
+        %ul.navbar-nav
+          %li.nav-item
+            %a.nav-link{:href => expeditions_path} Expeditions
+        %ul.navbar-nav
+          %li.nav-item
+            %a.nav-link{:href => organisations_path} Organizations
+        %ul.navbar-nav
+          %li.nav-item
+            %a.nav-link{:href => users_path} Contacts
+        -#%ul.navbar-nav
+        -#  %li.nav-item
+        -#    %a.nav-link{:href => roles_path} Roles
+        %ul.navbar-nav
+          %li.nav-item
+            %a.nav-link.disabled{:href => surveys_path} Impact
+        %ul.navbar-nav
+          %li.nav-item
+            %a.nav-link{:href => admin_control_panel_path} Admin
+        -# %ul.navbar-nav
+        -#   %li.nav-item
+        -#     %a.nav-link{:href => contents_path} Contents
+        -# %ul.navbar-nav
+        -#   %li.nav-item
+        -#     %a.nav-link{:href => activities_path} Activities
+        %ul.navbar-nav.ms-auto.justify-content-end
+          %li.nav-item
+            = button_to("Sign out", destroy_user_session_path, method: :delete, class: "nav-link btn btn-link")
+      - else
+        %ul.navbar-nav.ms-auto.w-100.justify-content-end
+          %li.nav-item
+            %a.nav-link{:href => new_user_session_path} Log in
+
+

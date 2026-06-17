@@ -1,0 +1,102 @@
+//application/_form
+- if @item.present?
+  = simple_form_for(@item,
+    url: (@item.new_record? ? create_item_path : nil),
+    method: (@item.new_record? ? :post : :patch),
+      html: { id: "user-main-form", novalidate: true, autocomplete: "off", data: { user_id: @item.id, turbo: false } }) do |f|
+    = f.error_notification
+    = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+    .row
+      = render 'form_header', item: @item, parent: @parent, f: f, edit: edit
+      - if @item.is_a?(User) && @item.closed_to_outreach?
+        .alert.alert-warning.mt-2{ role: "alert", style: "border-left:6px solid #dc3545;background:#fff3cd;color:#663c00;" }
+          %strong 🚫 Do not contact:
+          This contact is closed to outreach without permission from
+          = @item.owner&.name || 'the owner'
+
+      .col-md-12
+        .form-inputs
+          - if @parent
+            = f.hidden_field "#{@parent.class.name.underscore}_id", value: @parent.id
+
+          - fields = form_fields_for(@item)
+          - contact_field = fields.delete('is_contact_only')
+          - if contact_field
+            = f.input contact_field['name'],
+             label: contact_field['label'],
+             as: contact_field['as'],
+             disabled: !edit,
+             input_html: {data: {controller: 'contact-toggle',action: 'change->contact-toggle#toggle'}}
+
+          - if @item.is_a?(User) && !@item.contact? && @item.persisted?
+            .contact-login-only{ style: (@item.contact? ? "display:none;" : "") }
+              - can_change_own_password = current_user.admin? || current_user.id == @item.id
+              - if can_change_own_password
+                - if edit
+                  = link_to password_modal_user_path(@item),
+                            data: { turbo: true, turbo_frame: 'password-modal' },
+                            class: 'btn btn-primary px-3 d-inline-flex align-items-center gap-2 mb-3 mt-3' do
+                    %i.bi.bi-shield-lock-fill
+                    Change password
+                - else
+                  %button.btn.btn-secondary.px-3.d-inline-flex.align-items-center.gap-2.mb-3.mt-3{ disabled: true }
+                    %i.bi.bi-shield-lock-fill
+                    Change password
+
+          - fields.each_value do |ff|
+            - if edit && ff['readonly']
+              - next
+
+            - if !edit && ff['readonly'] && ff['value']
+              .form-group
+                %label.form-label= ff['label']
+                %p.form-control-static= ff['value'].respond_to?(:call) ? ff['value'].call(@item) : ff['value']
+              - next
+
+            - classes      = ff['name'].in?(%w[current_password password password_confirmation]) ? 'contact-credentials' : ''
+            - required     = ff['required']   # let the helper decide (only new records)
+            - hidden_style = ff['hidden'] ? 'display:none;' : ''
+
+            - if ff['as'] == :check_boxes
+              .form-group{ style: hidden_style }
+                = f.input ff['name'],
+                  label: ff['label'],
+                  as: ff['as'],
+                  collection: ff['collection'],
+                  label_method: ff['label_method'],
+                  value_method: ff['value_method'],
+                  input_html: { multiple: true, disabled: !edit || ff['disabled'] },
+                  name: ff['name'],
+                  item_wrapper_class: "form-check",
+                  item_label_class: "form-check-label",
+                  item_input_class: "form-check-input"
+            - else
+              - is_org = ff['name'].in?(%w[organisation organisation_id]) || ff['label'].to_s.strip == 'Organisation'
+              - group_data = {}
+              - if is_org
+                - group_data = {controller: 'org-select',
+                  'org-select-modal-id-value': 'new-organisation-modal',
+                  'org-select-create-url-value': organisations_path(format: :json)}
+              .form-group{ style: hidden_style, data: group_data }
+                - merged_input_html = (ff['input_html'] || {}).merge(class: [classes, ff.dig('input_html','class')].compact.join(' '))
+                = f.input ff['name'],
+                          label: ff['label'],
+                          as: ff['as'],
+                          collection: ff['collection'],
+                          label_method: ff['label_method'],
+                          value_method: ff['value_method'],
+                          readonly: ff['readonly'] || !edit,
+                          disabled: ff['disabled'] || !edit,
+                          required: required,
+                          input_html: merged_input_html
+                - if is_org
+                  = render 'organisations/new_inline_modal'
+          - if !edit && @item.is_a?(Organisation)
+            .row.mt-4
+              .col-md-12
+                .d-flex.gap-3.align-items-center
+                  = link_to 'Users',       organisation_users_path(@item),       class: 'btn btn-m me-2'
+                  = link_to 'Expeditions', organisation_expeditions_path(@item), class: 'btn btn-m me-2'
+
+- else
+  %p.text-muted This item has been deleted. You can view its change history below.

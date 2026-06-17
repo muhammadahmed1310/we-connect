@@ -1,0 +1,8 @@
+--readme README.md
+--title 'WeHub'
+--charset utf-8
+--plugin coderay
+'app/**/*.rb'
+'lib/**/*.rb'
+-
+

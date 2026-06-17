@@ -1,0 +1,32 @@
+- parent ||= @parent
+- selected_ids ||= ''
+- path = parent&.is_a?(Expedition) ? change_role_expedition_users_path(parent) : change_role_users_path
+
+= form_with url: path, method: :post, local: true do |f|
+  - Array(selected_ids).each do |id|
+    = hidden_field_tag 'selected_ids[]', id
+
+
+  - if parent.is_a?(Expedition)
+    = f.label :role, "Expedition Role"
+    = f.select :role_choice_item_id,
+        options_from_collection_for_select(ChoiceItem.joins(:choice).where(choices: { name: 'expedition_role_type' }), :id, :name),
+        {},
+        class: "form-select"
+    = f.hidden_field :expedition_id, value: parent.id
+  - else
+    = f.label :role, "User Roles"
+    - Choice.find_by(name: 'user_role_type')&.choice_items&.uniq(&:id)&.each do |choice_item|
+      .form-check
+        = f.check_box :role_choice_item_ids,
+                      { multiple: true,
+                        class: 'form-check-input',
+                        checked: @selected_users&.any? { |u| u.user_role_types.include?(choice_item) } },
+                      choice_item.id,
+                      nil
+        = f.label "role_choice_item_ids_#{choice_item.id}", choice_item.name, class: 'form-check-label'
+
+
+  .modal-footer
+    %button.btn.btn-secondary{ type: "button", data: { action: "click->modal#close" } } Cancel
+    = f.submit "Update Roles", class: "btn btn-primary"

@@ -1,0 +1,11 @@
+//application//index_header
+-# locals: (title:, parent: nil) -->
+
+
+.col-md-12.we-form-header
+  = render 'index_buttons',total_count: @total_count
+  %h1
+    = title
+    - unless parent.nil?
+      for
+      = link_to parent.name, polymorphic_path(parent)

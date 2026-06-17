@@ -1,0 +1,11 @@
+.modal{id: id}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h4.modal-title= title
+        %button.btn-close.ms-auto{type: "button", "data-bs-dismiss" => "modal", "aria-label" => "Close"}
+      .modal-body
+        - if defined?(body_partial)
+          = render partial: body_partial, locals: body_locals || {}
+        - else
+          = yield if block_given?

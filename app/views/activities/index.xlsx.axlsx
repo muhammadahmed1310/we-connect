@@ -1,0 +1,14 @@
+xlsx_package.workbook.add_worksheet(name: "#{controller_name.titleize}") do |sheet|
+  sheet.add_row ["ID", "Name", "Type", "Phase", "Status","Assigned User","Start Date", "Deadline Date", "Is_completed"]
+  @items.each do |activity|
+    sheet.add_row [activity.id,
+     activity.name,
+     activity.activity_type&.name,
+     activity.expedition_phase&.name,
+     activity.activity_status_type&.name,
+     activity.assigned_user&.name,
+     activity.start_date,
+     activity.deadline_date,
+     activity.is_completed]
+  end
+end

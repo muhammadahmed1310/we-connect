@@ -1,0 +1,23 @@
+-# locals: (edit: true, f:) -->
+
+- if !params['version'].present? # no actions allowed on old versions
+
+  - if edit
+
+    = button_tag(type: 'submit', class: "btn btn-light btn-sm") do
+      %span.btn-text submit
+      %i.bs-icon.bi.bi-save<>
+  - elsif can_edit?(@item)
+    = link_to edit_item_path(@item), class: "btn btn-light btn-sm" do
+      %span.btn-text update
+      %i.bs-icon.bi.bi-pencil<>
+
+  - if can_edit?(@item)
+    = link_to @item, method: :delete, data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: "btn btn-light btn-sm" do
+      %span.btn-text delete
+      %i.bs-icon.bi.bi-trash<>
+
+  - if current_user&.admin? && @item.respond_to?(:versions) && !@item.new_record?
+    = link_to versions_path(@item), class: "btn btn-light btn-sm" do
+      %span.btn-text versions
+      %i.bs-icon.bi.bi-stickies<>

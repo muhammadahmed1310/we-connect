@@ -1,0 +1,21 @@
+//application/_scope_pill
+-# locals: (scope:, choices: ) -->
+
+
+
+.float-end.pe-3
+  .dropdown
+    %button.btn.btn-light.btn-sm.dropdown-toggle{type: :button, data: {bs_toggle: "dropdown"}}
+      - name = scope_name(scope)
+      - if params[:filter].nil? || params[:scope] != scope.to_s
+        = name
+      - elsif choices[0].is_a?(Array)
+        - choice = choices.detect{|c| c[1].to_s == params[:filter]}
+        = "#{name}: #{choice[0]}"
+      - else
+        = "#{name}: #{params[:filter]}"
+
+    %ul.dropdown-menu
+      - choices&.each do |k,v|
+        %li.dropdown-item
+          = scope_link(scope, k, v)

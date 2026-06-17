@@ -1,0 +1,126 @@
+-# locals: (item:, parent:, edit: false)
+
+= simple_form_for(@item, wrapper: :horizontal_form) do |f|
+  = f.error_notification
+  = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+
+  .row
+    = render 'form_header', item: @item, f: f, parent: @parent, edit: edit
+
+  .form-inputs
+    .row
+      .col-md-8
+        - if edit
+          .row
+            .col-md-6
+              = f.input :name, label: 'Name', required: true
+            .col-md-6
+              = f.input :funded_amount, label: 'Funded Amount'
+            .col-md-6
+              = f.input :location, label: 'Location'
+            .col-md-6
+              = f.input :expedition_phase_type,
+                label: 'Current Phase',
+                wrapper: :horizontal_select,
+                collection: Choice.select_options_for('expedition_phase_type_group', label_as_value: true)
+
+            .col-md-6
+              = f.input :start_date, label: 'Start Date', as: :timepicker, required: true
+            .col-md-6
+              = f.input :end_date, label: 'End Date', as: :timepicker, required: true
+            .col-md-12
+              = f.input :expedition_leader_ids,label: 'Expedition Leaders',as: :select,collection: User.all.map { |u| [u.name, u.id] },
+                input_html: {multiple: true, data: {controller: "tom-select",max_items: 6}}
+            .col-md-12
+              = f.input :community_manager_ids,label: 'Community Managers',as: :select,collection: User.all.map { |u| [u.name, u.id] },
+                input_html: {multiple: true, data: {controller: "tom-select",max_items: 6}}
+            .col-md-12
+              = f.input :partner_organisation_ids,label: 'Partners',as: :select,collection: Organisation.all.map { |u| [u.name, u.id] },
+                input_html: {multiple: true, class: 'form-control',size: 4, data: {controller: "tom-select",max_items: 6}}
+          = f.input :description, label: 'Description', as: :html
+        - else
+          .row
+            .col-md-6
+              .form-label
+                Type:
+                = @item.expedition_type
+            .col-md-6
+              .form-label
+                Current Phase:
+                = @item.expedition_phase_type&.titleize
+          .row
+            .col-md-6
+              .form-label
+                Start Date:
+                = @item.start_date
+            .col-md-6
+              .form-label
+                End Date:
+                = @item.end_date
+            .col-md-6
+              .form-label
+                Progress:
+                = @item.progress ? "#{@item.progress}%" : "0%"
+            .col-md-6
+              .form-label
+                Funding:
+                = @item.funded_amount
+            .col-md-6
+              .form-label
+                Location:
+                = @item.location
+            .col-md-6
+              .form-label
+                Community Managers:
+                = @item.community_managers.map(&:name).join(', ')
+            .col-md-6
+              .form-label
+                Expedition Leaders:
+                = @item.expedition_leaders.map(&:name).join(', ')
+            .col-md-6
+              .form-label
+                Partners:
+                = @item.partner_organisations.map(&:name).join(', ')
+
+            .col-md-12
+              .form-label Description:
+              .we-box
+                != @item.description
+
+      -# .col-md-4
+      -#   .we-box
+      -#     .we-bar-title Status
+      -#     .clearfix
+      -#     = f.input :is_active, label: 'Active?', readonly: !edit
+      -#     = f.input :is_marketing_completed, label: 'Marketing Completed?', readonly: !edit
+      -#     = f.input :is_platform_created, label: 'Platform Created?', readonly: !edit
+      -#     = f.input :is_ip_agreement_signed, label: 'IP Agreement Signed?', readonly: !edit
+      -#     = f.input :is_impact_survey_completed, label: 'Impact Survey Completed?', readonly: !edit
+      -#     = f.input :is_member_agreement_completed, label: 'Member Agreement Completed?', readonly: !edit
+      .row.mt-4
+        .col-md-12
+          .d-flex.gap-3.align-items-center
+            = link_to 'Users', expedition_users_path(@item), class: 'btn btn-m me-2'
+            = link_to 'Tasks', tasks_expedition_path(@item), class: 'btn btn-m me-2'
+            -# = link_to 'Calls', expedition_meetings_path(@item), class: 'btn btn-m'
+      -# - if !edit
+      -#   - @item.expedition_phases.each do |phase|
+      -#     = f.simple_fields_for :expedition_phases, phase, wrapper: :inline_form,  wrapper_mappings: { select: :inline_select } do |ph|
+      -#       .col-md-12{data: {id: phase.id}}
+      -#         .we-box
+      -#           .we-buttons
+      -#             = link_to "#phaseBox#{phase.name}", data: { bs_toggle: 'collapse' } do
+      -#               %i.bi.bi-chevron-expand
+      -#           .we-buttons
+      -#             = ph.input :is_completed, label: 'Complete?', readonly: true
+      -#           .we-title
+      -#             = link_to phase.name.titleize, phase
+      -#           .we-subtitle
+      -#             - if phase.start_date.present? && phase.end_date.present?
+      -#               = "#{phase.start_date} to #{phase.end_date}"
+      -#           .clearfix
+      -#           .collapse{id: "phaseBox#{phase.name}", class: @item.expedition_phase_type == phase.name ? 'show' : ''}
+      -#             %hr
+      -#             = render 'table', tf: table_fields_for(Activity), items: phase.tasks
+      -#
+      -#

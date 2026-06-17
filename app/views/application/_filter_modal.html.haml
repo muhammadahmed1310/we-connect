@@ -1,0 +1,75 @@
+.modal.fade{id: "filterModal", tabindex: "-1"}
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        %h5.modal-title Add Filters
+        %button.btn-close{ type: "button", data: { bs_dismiss: "modal" }, aria: { label: "Close" } }
+
+      .modal-body{ data: { controller: "filters" } }
+        = form_with url: request.path, method: :get, local: true, html: { data: { filters_target: "form" } } do |f|
+          - if model == User
+            = f.label :user_role_type_ids, 'Roles'
+            = f.select :user_role_type_ids,
+                choice_options(:user_role_type, value: :id),
+                {},
+                {multiple: true,
+              class: 'form-select',
+              id: 'user_role_type_ids',
+              name: 'user_role_type_ids[]',
+              data: { controller: 'tom-select', placeholder: 'Select one or more roles...' }}
+            = f.label :country
+            = f.select :country,
+                [['', '']] + ISO3166::Country.all.map(&:iso_short_name).map { |c| [c, c] },
+                {},
+                {class: 'form-select',
+                  id: 'country_select',
+                  data: {controller: 'tom-select',
+                    placeholder: 'Select country...'}}
+            = f.label :created_at_from, 'Created After'
+            = f.date_field :created_at_from, class: 'form-control'
+            = f.label :created_at_to, 'Created Before'
+            = f.date_field :created_at_to, class: 'form-control'
+          - elsif model == Organisation
+            .mb-3
+              = f.label :organisation_type, 'Organisation Type'
+              - selected = Array(params[:organisation_type]).reject(&:blank?).map(&:to_i)
+              = select_tag 'organisation_type[]',
+                  options_for_select(choice_options(:organisation_type, value: :id), selected),
+                  include_blank: true,
+                  multiple: true,
+                  class: 'form-select',
+                  data: { controller: 'tom-select', max_items: 6 }
+
+            .row
+              .col-md-6
+                = f.label :created_at_from, 'Date Added (from)'
+                = f.date_field :created_at_from, value: params[:created_at_from], class: 'form-control'
+              .col-md-6
+                = f.label :created_at_to, 'Date Added (to)'
+                = f.date_field :created_at_to, value: params[:created_at_to], class: 'form-control'
+
+          - elsif model == Expedition
+            = f.label :expedition_type, 'Type'
+            = f.select :expedition_type, Choice.select_options_for('expedition_type'), {}, { multiple: true, class: 'form-select', data: { controller: 'tom-select', placeholder: 'Select expedition types...' } }
+            = f.label :expedition_phase_type, 'Phase'
+            = f.select :expedition_phase_type, Choice.phase_type_options_with_labels, {}, { multiple: true, class: 'form-select', data: { controller: 'tom-select', placeholder: 'Select phase types...' } }
+            = f.label :location
+            = f.text_field :location, class: 'form-control'
+          - elsif model == ExpeditionUser
+            - role_options = Choice.find_by(name: 'expedition_role_type')&.choice_items&.map(&:name) || []
+            .mb-3
+              = label_tag :user_name, "User (name or email)"
+              = text_field_tag :user_name, params[:user_name], class: "form-control",
+                                         placeholder: "e.g. Julia Middleton or julia@example.com"
+
+            .mb-3
+              = label_tag :expedition_role_type, "Expedition Role"
+              = select_tag 'expedition_role_type[]',
+                                     options_for_select(role_options, Array(params[:expedition_role_type]).reject(&:blank?)),
+                                     multiple: true,
+                                     class: 'form-select',
+                                     data: { controller: 'tom-select', placeholder: 'Choose role(s)…' }
+
+          .modal-footer
+            %button.btn.btn-secondary{ type: "button", data: { bs_dismiss: 'modal' } } Cancel
+            = f.submit 'Apply Filters', class: 'btn btn-primary'

@@ -1,0 +1,15 @@
+= form_tag skeleton_expeditions_path, method: :post do
+  = hidden_field_tag :type, expedition_type ||= 'group'
+  - skeleton = Expedition.where(is_skeleton: true, expedition_type: expedition_type).first
+  - if skeleton
+    = hidden_field_tag :skeleton_expedition_id, skeleton.id
+  - else
+    %div.alert.alert-warning No skeleton expedition found for type "#{expedition_type}".
+  .form-inputs
+    .row
+      .col-md-6
+        = label_tag 'New Expedition Name:'
+        = text_field_tag 'expedition_name', nil, class: 'form-control mb-3'
+
+  .form-actions.float-end
+    = submit_tag "Create #{expedition_type.capitalize} Expedition", class: 'btn btn-primary btn-sm'

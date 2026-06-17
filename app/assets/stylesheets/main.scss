@@ -1,0 +1,558 @@
+// Bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap/functions";
+@import "bootstrap/variables";
+@import "tom_select.bootstrap5";
+
+$custom-colors: (
+        "bootstrap": #563d7c,
+        "simpleform": #00617f,
+        "secondary": #a4aaaf,
+        "light": #f8f9fa,
+        "red":red,
+        "pink":hotpink,
+        "navyblue": #2b3b69,
+        "lightblue": #76cde1,
+        "white": #ffffff,
+);
+
+$light-blue: map-get($custom-colors, "lightblue");
+$white: map-get($custom-colors, "white");
+$navy-blue: map-get($custom-colors, "navyblue");
+$secondary: map-get($custom-colors, "secondary");
+
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
+@import "simple_form-bootstrap/simple_form-bootstrap";
+
+body{
+  font-family: Montserrat, sans-serif;
+}
+// General Custom styles
+button {
+  @extend .btn;
+}
+a:link, a:visited {
+  text-decoration: none;
+  color: $navy-blue;
+}
+table a:link, table a:visited {
+  color: white !important;
+}
+.sort-icon {
+  font-size: 0.85em;
+  opacity: 0.5;
+}
+
+.footer {
+  font-size: x-small;
+  margin-top: 3rem;
+  border-top: 1px solid $secondary;
+}
+.revert {
+  font-size: medium;
+}
+h1 {
+  font-size: 1.5rem;
+}
+
+// For forms - boxes
+// -------------------------------------
+.we-form-header {
+  border-bottom: #ced4da 1px solid;
+  margin-bottom: 20px;
+}
+.we-box, .we-collapsable {
+  border: 1px solid #ced4da;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
+  .we-title {
+    float: left;
+    padding-right: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    width: 200px;
+  }
+  .we-bar-title {
+    font-size: 1.1rem;
+    text-align: center;
+    background: $light-blue;
+    color: white;
+    border-radius: 0.375rem;
+    margin-bottom: 10px;
+  }
+  .we-subtitle {
+    font-size: 0.9rem;
+    font-weight: normal;
+  }
+  .we-buttons {
+    float: right;
+    padding-right: 1rem;
+  }
+}
+
+.we-collapsable {
+
+}
+
+// For forms - controls
+// -------------------------------------
+
+.datepicker {
+  position: relative;
+  z-index: 1000;
+}
+// Style for calendar days
+.ui-datepicker-calendar td a,
+.datepicker-days td,
+.day {
+  background-color: $navy-blue !important;   // Navy blue background
+  color: $white !important;                  // White text
+  border-radius: 4px;                        // Optional: rounded corners
+  transition: background-color 0.2s ease-in-out;
+}
+
+// Hover state: light blue
+.ui-datepicker-calendar td a:hover,
+.datepicker-days td:hover,
+.day:hover {
+  background-color: $light-blue !important;
+  color: $white !important;
+}
+
+// Today’s date (optional highlight)
+.ui-datepicker-today a {
+  border: 2px solid $light-blue !important;
+}
+
+
+.navbar.navbar-expand-lg.navbar-light{
+  background-color: $light-blue !important;
+  color: $navy-blue !important;
+}
+a.nav-link:hover{
+  color: $white !important;
+}
+
+
+table, thead, tbody, tr, th, td{
+  font-family: Montserrat, sans-serif;
+  background-color: $navy-blue !important;
+  color: $white !important;
+}
+td a{
+  color: $white !important;
+}
+td a:hover{
+  color: $light-blue !important;
+}
+input[type="submit"] {
+  border-radius: 5%;
+  background-color: $navy-blue !important;
+  color: $white !important;
+}
+
+.alert {
+  background-color: $navy-blue !important;
+  color: $white !important;
+}
+
+.btn.dropdown-toggle {
+  background-color: $navy-blue !important;
+  color: $white !important;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+}
+li.dropdown-item:hover{
+  background-color: $navy-blue !important;
+  color: $white !important;
+}
+button, .btn{
+  background-color: $navy-blue !important;
+  color: $white !important;
+  border: none;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+  position: relative;
+  font-family: Montserrat, sans-serif;
+}
+.btn-m{
+  margin-bottom: 20px !important;
+}
+
+.btn .btn-text {
+  visibility: hidden;
+  width: 60px;
+  background-color: $navy-blue;
+  color: $white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 150%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 1s;
+}
+.btn:hover .btn-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+.btn:hover .btn-text {
+  visibility: visible;
+  opacity: 1;
+}
+.bg-dashboard-images {
+  height: 200px;
+  display: flex;
+  gap: 1rem;
+}
+
+.bg-image-left,
+.bg-image-center,
+.bg-image-right {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+}
+
+
+.dashboard-box {
+  position: relative;
+  height: clamp(160px, 24vw, 250px); /* fluid height: phones → desktops */
+  margin-left: 0;                    /* let the grid handle spacing */
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+}
+.bg-image-left {
+  background-image: url('mosaic.jpg');
+}
+.bg-image-center {
+  background-image: url('group.jpg');
+}
+
+.bg-image-right {
+  background-image: url('laptop.jpg');
+}
+
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.4); // light semi-transparent white
+  backdrop-filter: blur(2px); // stronger blur
+  -webkit-backdrop-filter: blur(2px); // for Safari
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-text h2 {
+  font-weight: 700;
+  /* 18px → 30px across breakpoints */
+  font-size: clamp(18px, 3.2vw, 30px);
+  margin-bottom: 0.25rem;
+  color: $navy-blue;
+}
+
+.overlay-text h1 {
+  font-weight: 800;
+  /* 36px → 70px across breakpoints */
+  font-size: clamp(36px, 7vw, 70px);
+  line-height: 1.05;
+  color: $navy-blue;
+}
+
+canvas#explorer-pie-chart,
+canvas#community-role-chart {
+  position: absolute;
+  inset: 0;                 /* fill parent */
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 520px;         /* don’t blow up on desktop */
+  aspect-ratio: 1 / 1;      /* always square */
+  margin: 0 auto;
+  position: relative;       /* so canvas 100%/100% works */
+}
+
+.custom-legend {
+  font-family: Montserrat, sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 10px;
+  max-width: 90%;       // keep legend inside chart column
+  text-align: center;   // center text alignment
+}
+/* Increase font size for legend labels */
+.custom-legend > div {
+  font-size: clamp(12px, 2.5vw, 15px) !important;
+  color: #646668FF;
+  font-family: Montserrat, sans-serif;
+
+}
+
+#explorer-legend, #community-legend {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+
+.expedition-scroll-box {
+  max-height: clamp(220px, 40vh, 400px); /* shorter on phones */
+  overflow-y: auto;
+  padding-right: 8px;
+
+  // Custom Scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: $navy-blue transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $navy-blue;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+.flex-column h3 {
+  color: $navy-blue;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.expedition-name {
+  padding: 6px 0;
+  text-align: left;
+}
+h1, h2, h3, li,p, canvas, .overlay-text {
+  font-family: 'Montserrat' !important;
+}
+h2, h3{
+  font-weight: bold;
+}
+
+li.expedition-name {
+  color: #646668FF;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+
+  a, span, em {
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.25rem;
+    border: 1px solid $navy-blue;
+    border-radius: 5px;
+    color: $navy-blue;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      background-color: $light-blue;
+      color: $white;
+    }
+  }
+
+  .current {
+    background-color: $navy-blue;
+    color: $white;
+    border-color: $navy-blue;
+    font-style: normal;
+  }
+
+  .disabled {
+    color: $secondary;
+    border-color: $secondary;
+  }
+}
+
+body .tox .tox-tbtn,
+body .tox .tox-mbtn {
+  background-color: #2b3b69 !important; /* navy blue */
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Hover state */
+body .tox .tox-tbtn:hover,
+body .tox .tox-mbtn:hover {
+  background-color: #76cde1 !important; /* light blue */
+  color: #ffffff !important;
+}
+
+/* Active/focused state */
+body .tox .tox-tbtn--enabled,
+body .tox .tox-tbtn:focus {
+  background-color: #76cde1 !important;
+  color: #ffffff !important;
+}
+
+/* Force all TinyMCE toolbar and menu buttons to have white icons/text */
+body .tox .tox-tbtn,
+body .tox .tox-mbtn,
+body .tox .tox-icon svg path {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Hover and active states */
+body .tox .tox-tbtn:hover,
+body .tox .tox-mbtn:hover,
+body .tox .tox-icon svg:hover path {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Force chevron icons in split buttons to white */
+body .tox .tox-split-button__chevron svg path {
+  fill: #ffffff !important;
+}
+
+/* Optional: also ensure on hover/focus they stay white */
+body .tox .tox-split-button:hover .tox-split-button__chevron svg path {
+  fill: #ffffff !important;
+}
+
+/* Force Formats dropdown chevron to white */
+body .tox .tox-tbtn__select-chevron svg path {
+  fill: #ffffff !important;
+}
+/* Make the divider line between label and chevron white */
+body .tox .tox-tbtn__select-chevron {
+  border-left: 1px solid #ffffff !important;
+}
+
+
+.we-modal-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(7,34,73,.5);
+  z-index: 5000;          /* ABOVE any flash */
+}
+
+.we-modal-dialog{
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-width: 720px;
+  z-index: 5010;          /* above backdrop */
+}
+
+.we-modal-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.we-modal-header, .we-modal-footer { padding: 16px; }
+.we-modal-body { padding: 0 16px 16px; }
+.we-modal-title { margin: 0; }
+.we-modal-close {
+  position: absolute; top:.5rem; right:.75rem;
+  border: 0; background: transparent; font-size: 24px; line-height: 1;
+  float: right; cursor: pointer;
+}
+/* ===== Flash banner ===== */
+#flash{
+  position: fixed;
+  left: 0; right: 0;
+  top: 70px;                  /* under your top bar */
+  z-index: 1200;              /* below modal/backdrop */
+  pointer-events: none;       /* don't block clicks on the page/modal */
+}
+
+#flash .alert{
+  pointer-events: auto;       /* allow interactions inside the banner */
+  max-width: 1100px;
+  margin: 0 auto;             /* centered; doesn't cover full width hit area */
+}
+
+/* When a modal is open, make flash COMPLETELY non-interactive and behind */
+body.we-modal-open #flash,
+body.we-modal-open #flash * {
+  pointer-events: none !important;
+  z-index: 100 !important;     /* sit under the dim backdrop */
+}
+
+/* ——— Small-screen polish ——— */
+@media (max-width: 991.98px) { /* iPad portrait and below */
+  .bg-dashboard-images { height: auto; }
+
+  /* make the three hero tiles breathe */
+  .dashboard-box { height: clamp(160px, 28vw, 220px); }
+}
+
+@media (max-width: 575.98px) { /* phones */
+  .overlay { backdrop-filter: blur(1px); }
+  .flex-column h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+@media (min-width: 992px) {  // lg and up
+  .dashboard-box {
+    height: 220px;            // was 250, tweak if you prefer
+  }
+  .chart-container {
+    width: 100%;
+    max-width: 480px;         // keeps charts from exploding on desktop
+    height: 360px;            // stable height for donuts
+  }
+}
+$gold: #deaf07;
+
+tr.user-row--restricted td {
+  background-color: rgba(222, 175, 7, 0.12) !important;
+}
+tr.user-row--restricted {
+  box-shadow: inset 4px 0 0 0 rgba(222, 175, 7, 0.75);
+}
+/* Make sure badges are readable on dark rows */
+.badge.bg-warning { color: #1d1d1d !important; }
+.badge.bg-success { color: #fff !important; }
+
+/* Nudge the warning icon for balance */
+td .text-warning { font-size: 0.95em; vertical-align: middle; }
+
+.we-fade-out {
+  opacity: 0;
+  transition: opacity .25s ease-in-out;
+}

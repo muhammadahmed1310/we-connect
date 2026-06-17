@@ -1,0 +1,3 @@
+class SurveyExpeditionsController < WeHubController
+
+end

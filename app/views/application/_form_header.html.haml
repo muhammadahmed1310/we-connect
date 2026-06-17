@@ -1,0 +1,18 @@
+-# locals: item:, f:, parent:, edit:
+- parent ||= nil
+- edit ||= false
+
+
+
+.col-md-12.we-form-header
+  .float-end
+    = render 'form_buttons', f: f, edit: edit
+
+  %h1
+    = item.name&.titleize || "[new #{item.class.name.humanize}]"
+    - unless parent.nil?
+      in
+      = link_to parent.name, polymorphic_path(parent)
+    - if params['version']
+      %span.h6
+        = "Version: #{params['version']}"

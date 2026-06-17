@@ -1,0 +1,7 @@
+/ app/views/shared/_flash.html.haml
+- if flash[:notice]
+  .alert.alert-success{ role: "alert" }= flash[:notice]
+- if flash[:alert]
+  .alert.alert-warning{ role: "alert" }= flash[:alert]
+- if flash[:error]
+  .alert.alert-danger{ role: "alert" }= flash[:error]

@@ -1,0 +1,15 @@
+# app/views/organisations/index.xlsx.caxlsx
+
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "#{controller_name.titleize}") do |sheet|
+  sheet.add_row ["ID", "Name", "Type",  "Description"]
+  @items.each do |organisation|
+    sheet.add_row [
+      organisation.id,
+      organisation.name,
+      organisation.organisation_type,
+      organisation.description,
+
+    ]
+  end
+end

@@ -1,0 +1,93 @@
+//application/index
+.row.mb-3.align-items-center
+  .col-md-8
+    - if index_search?
+      = form_tag(items_path, method: :get, class: "row row-cols-auto g-2 align-items-center") do
+        .col
+          = text_field_tag :q, params[:q], class: "form-control form-control-sm", placeholder: "Search ..."
+        .col
+          = submit_tag 'Search', class: "btn btn-sm btn-outline-primary"
+        .col
+          = link_to 'Clear Filters', items_path, class: "btn btn-sm btn-outline-secondary"
+        .col
+          .float-end.pe-3
+            = form_with url: request.path, method: :get, local: true, class: "d-inline-block" do
+              = hidden_field_tag :sort, params[:sort]
+              = hidden_field_tag :direction, params[:direction]
+              = hidden_field_tag :page, 1
+              - params.except(:controller, :action, :q, :sort, :direction, :per_page, :page).each do |k,v|
+                = hidden_field_tag k, v
+              = select_tag :per_page,
+                options_for_select([10, 25, 50, 100], params[:per_page] || session[:per_page] || 25),
+                onchange: 'this.form.submit();',
+                class: 'form-select form-select-sm ms-2'
+
+
+
+
+= render partial: 'application/filter_modal', locals: { model: controller.model, params: params }
+
+.row
+  - if bulk_action_route_defined?
+    = form_with url: controller.bulk_action_path,
+            method: :post,
+            id: "bulk-action-form",
+            data: { controller: "bulk-action" } do
+      = hidden_field_tag :bulk_action, nil, id: "bulk_action_field"
+      = hidden_field_tag :filters, request.query_string
+      - if @parent
+        = hidden_field_tag "#{@parent.class.name.underscore}_id", @parent.id
+      .row
+        = render 'index_header', title: @title, parent: @parent
+      .row
+        .col-md-12#table-container
+          = render 'table', tf: table_fields_for(controller.model), items: @items
+
+
+.row
+  - if join_table? && @parent.present?
+    - model_instance = controller.model.new
+    - form_url = polymorphic_path([@parent, model_instance])
+    = render 'modal', title: "Add #{controller_name.singularize} to #{@parent.name}", id: 'newAssoc' do
+      = simple_form_for(model_instance, url: form_url) do |f|
+        - form_fields_for(model_instance).values.each do |ff|
+          - next if ff['name'] == parent_id_field_name
+          = f.input ff['name'], label: ff['label'], collection: ff['collection']
+        = f.hidden_field parent_id_field_name, value: @parent.id
+        .text-right
+          = f.submit 'Save', class: 'btn btn-primary btn-sm'
+
+
+
+-# - unless index_action_menu.empty?
+-#   - index_action_menu.each do |action|
+-#     - if action[:partial]
+-#       = render 'modal', title: action[:label], id: action[:id] do
+-#         = render action[:partial], locals: { selected_ids: '', parent: @parent }
+- index_action_menu.each do |entry|
+  - if entry[:partial]
+    = render partial: 'modal', locals: {title: entry[:label],
+      id: entry[:id],
+      body_partial: entry[:partial],
+      body_locals: entry[:locals] || {}}
+
+  -# ✅ Special case: render the bulk 'change_role' modal once
+
+
+-# Modals go here
+= render partial: 'modal', locals: {title: 'Change Selected User Roles',
+  id: 'change_role',
+  body_partial: 'users/change_role_modal',
+  body_locals: {selected_ids: '',
+    parent: @parent,
+    selected_users: @selected_users}}
+
+= render partial: 'modal', locals: {title: 'Add Users to Expedition',
+  id: 'add_to_expedition',
+  body_partial: 'users/add_to_expedition_modal',
+  body_locals: { selected_ids: '', parent: @parent }}
+
+= render partial: 'modal', locals: {title: 'Add Users to Organisation',
+  id: 'add_to_organisation',
+  body_partial: 'users/add_to_organisation_modal',
+  body_locals: { selected_ids: '', parent: @parent, organisations: Organisation.order(:name) }}

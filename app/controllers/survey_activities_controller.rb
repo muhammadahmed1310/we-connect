@@ -1,0 +1,2 @@
+class SurveyActivitiesController < WeHubController
+end

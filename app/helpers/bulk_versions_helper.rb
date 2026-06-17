@@ -1,0 +1,2 @@
+module BulkVersionsHelper
+end

@@ -1,0 +1,50 @@
+//application/_table
+-# locals: (tf:, items:)
+- edit = defined?(edit) ? edit : false
+
+%table.table.table-striped.table-bordered
+  %thead.thead-light
+    %tr
+      %th
+        %input#select_all{type: "checkbox",
+          data: {
+            controller: "bulk-action",
+            bulk_action_target: "selectAll",
+            action: "bulk-action#toggleAll"
+          }
+        }
+      - tf.values.each do |column|
+        - if column['sortable'] == false
+          %th= column['label']
+        - else
+          - sort_key = column['sort_key'] || column['name']
+          - direction = params[:direction] || 'asc'
+          - is_current = params[:sort] == sort_key
+          - arrow = is_current ? (direction == 'asc' ? '↑' : '↓') : '⇅'
+          %th
+            = link_to "#{column['label']} #{arrow}".html_safe, request.params.merge(sort: sort_key, direction: (is_current && direction == 'asc' ? 'desc' : 'asc')), { class: 'text-nowrap', title: 'Click to sort' }
+
+
+  %tbody
+    - items.each do |item|
+      %tr
+        %td
+          %input.bulk-checkbox{type: "checkbox",
+            name: "selected_ids[]",
+            value: item.id,
+            data: {
+              controller: "bulk-action",
+              bulk_action_target: "checkbox"
+            }
+          }
+        - tf.keys.each do |key|
+          - if tf[key]['as'] == 'link'
+            %td= link_to tf[key]['link_text'].call(item) || item[key], tf[key]['path'].call(item)
+          - elsif tf[key]['type'] == 'boolean'
+            %td= item[key] ? 'Yes' : 'No'
+          - elsif tf[key]['value'].present?
+            - value = tf[key]['value'].call(item) rescue (tf[key]['fallback_to_sort_col'] ? item.try(:[], :sort_col) : nil)
+            %td= value
+          - else
+            %td= display_field_value(item, key)
+

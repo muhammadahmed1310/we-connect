@@ -1,0 +1,40 @@
+- if bulk_action_route_defined?
+  = form_with url: bulk_action_expedition_activities_path(@expedition),
+              method: :post,
+              local: true,
+              id: "bulk-action-form",
+              data: { turbo: false, controller: "bulk-action" } do
+    = hidden_field_tag :bulk_action, nil, id: "bulk_action_field"
+
+    - @phases.each do |phase|
+      .col-md-12{data: {id: phase.id}}
+        .we-box{class: (@expedition.expedition_phase_type == phase.name ? 'fw-bold border-danger' : '')}
+          .d-flex.justify-content-between.align-items-center.mb-2
+            .we-title.mb-0
+              = link_to phase.name.titleize, phase
+            .d-flex.align-items-center.gap-2
+              .we-buttons.mb-0
+                = link_to "#phaseBox#{phase.name}", data: { bs_toggle: 'collapse' } do
+                  %i.bi.bi-chevron-expand
+              .we-buttons.mb-0
+                - task_bulk_actions = @task_bulk_actions
+                - unless task_bulk_actions.empty?
+                  .float-end.ps-3
+                    .dropdown
+                      %button.btn.btn-light.btn-sm.dropdown-toggle{ type: "button", id: "dropdownMenuButton", data: { bs_toggle: "dropdown" } }
+                        Actions
+                      %ul.dropdown-menu{ aria: { labelledby: "dropdownMenuButton" } }
+                        - task_bulk_actions.each do |entry|
+                          %li
+                            %a.dropdown-item{href: entry[:url] || "#",
+                              method: entry[:method] || :post,
+                              data: entry[:data]
+                            }= entry[:label]
+
+          .we-subtitle
+            - if phase.start_date.present? && phase.end_date.present?
+              = "#{phase.start_date} to #{phase.end_date}"
+          .clearfix
+          .collapse{id: "phaseBox#{phase.name}", class: @expedition.expedition_phase_type == phase.name ? 'show' : ''}
+            %hr
+              = render 'activities/phase_task_table', tf: table_fields_for(Activity), items: phase.tasks, phase_id: phase.id

@@ -1,0 +1,72 @@
+//app/views/bulk_versions/show.html.haml
+- obj = JSON.parse(@version.object || '{}') rescue {}
+- records = @paginated_changes
+- action = obj['action'].to_s.humanize
+- has_changes = records.compact.any? { |r| r.key?('from') || r.key?('to') }
+
+.text-center.mt-3
+  = will_paginate @paginated_changes
+%h3 Change Summary
+%p
+  %strong Action:
+  = action
+- if obj['expedition_name'] && obj['expedition_id']
+  %p
+    %strong Expedition:
+    = "#{obj['expedition_name']}"
+- if records.any?
+  %table.table
+    %thead
+      %tr
+        %th ID
+        %th Name
+        %th Type
+        %th Expedition
+        %th Role
+        %th Status
+        %th Changes
+    %tbody
+      - records.compact.each do |r|
+        %tr
+          %td= r['id']
+          %td= r['name']
+          %td= r['type'] || @version.item_type
+          %td= r['expedition_name'] || obj['expedition_name'] || '—'
+          %td= r['role'] || '—'
+          %td
+            - if r['from'] && r['to']
+              - status = 'Updated'
+              %span.badge.bg-warning= status
+            - elsif @version.event == 'create' || @action_type == 'bulk_add_to_expedition'
+              - status = 'Created'
+              %span.badge.bg-success= status
+            - else
+              = '—'
+          - if has_changes
+            %td
+              - if r['from'] && r['to']
+                %table.table.table-sm.table-borderless
+                  %thead
+                    %tr
+                      %th Field
+                      %th Old
+                      %th New
+                  %tbody
+                    - r['to'].each do |field, new_value|
+                      - old_value = r['from'].is_a?(Hash) ? r['from'][field] : nil
+                      %tr
+                        - if field.to_s == 'role' || @action_type == 'bulk_change_role'
+                          %td Role
+                          %td= Array(r['from']).reject(&:blank?).join(', ').presence || '—'
+                          %td= Array(r['to']).reject(&:blank?).join(', ').presence || '—'
+                        - else
+                          %td= field.to_s.humanize
+                          %td= old_value.presence || '—'
+                          %td= new_value.presence || '—'
+
+
+
+- else
+  %p No detailed records found for this change.
+.text-center.mt-3
+  = will_paginate @paginated_changes

@@ -1,0 +1,119 @@
+/ =========================
+/ A) MOBILE / SMALL TABLETS
+/ =========================
+/ xs–md: alternating tile + chart + tile + chart
+.row.g-4.text-center.mb-5.align-items-stretch.d-lg-none
+
+  / 1) Explorers tile
+  .col-12
+    .dashboard-box.bg-image-left
+      .overlay
+        .overlay-text
+          %h2 Explorers
+          %h1= @explorer_count
+  / 1b) Explorers chart
+  .col-12.d-flex.flex-column.align-items-center
+    .chart-container
+      %canvas#explorer-pie-chart{
+        data: {
+          controller: "explorer-chart",
+          "explorer-chart-solo-value": @solo_count,
+          "explorer-chart-group-value": @group_count,
+          "explorer-chart-fellow-value": @fellow_count
+        }
+      }
+    %div.custom-legend
+
+  / 2) Community tile
+  .col-12
+    .dashboard-box.bg-image-center
+      .overlay
+        .overlay-text
+          %h2 Community
+          %h1= @community_users.count
+  / 2b) Contacts chart
+  .col-12.d-flex.flex-column.align-items-center
+    .chart-container
+      %canvas#community-role-chart{
+        data: {
+          controller: "community-chart",
+          "community-chart-labels-value": @community_roles.keys.join(","),
+          "community-chart-data-value": @community_roles.values.join(",")
+        }
+      }
+    %div.custom-legend
+
+  / 3) Expeditions tile
+  .col-12
+    .dashboard-box.bg-image-right
+      .overlay
+        .overlay-text
+          %h2 Expeditions
+          %h1= @expeditions.count
+
+  / 3b) Expeditions list
+  .col-12.d-flex.flex-column
+    %h3 Active Expeditions
+    .expedition-scroll-box.flex-grow-1
+      %ul.list-unstyled
+        - @active_expeditions.each do |exp|
+          %li.expedition-name= exp.name
+
+
+/ =========================
+/ B) DESKTOP / iPAD PRO (lg+)
+/ =========================
+/ lg+: first row tiles, second row charts/list
+.d-none.d-lg-block
+  / Row 1 — three tiles
+  .row.g-4.text-center.mb-4.align-items-stretch
+    .col-lg-4
+      .dashboard-box.bg-image-left
+        .overlay
+          .overlay-text
+            %h2 Explorers
+            %h1= @explorer_count
+    .col-lg-4
+      .dashboard-box.bg-image-center
+        .overlay
+          .overlay-text
+            %h2 Community
+            %h1= @community_users.count
+    .col-lg-4
+      .dashboard-box.bg-image-right
+        .overlay
+          .overlay-text
+            %h2 Expeditions
+            %h1= @expeditions.count
+
+  / Row 2 — two charts + expeditions list
+  .row.g-4.text-center.align-items-stretch
+    .col-lg-4.d-flex.flex-column.align-items-center
+      .chart-container
+        %canvas#explorer-pie-chart-lg{
+          data: {
+            controller: "explorer-chart",
+            "explorer-chart-solo-value": @solo_count,
+            "explorer-chart-group-value": @group_count,
+            "explorer-chart-fellow-value": @fellow_count
+          }
+        }
+      %div.custom-legend
+
+    .col-lg-4.d-flex.flex-column.align-items-center
+      .chart-container
+        %canvas#community-role-chart-lg{
+          data: {
+            controller: "community-chart",
+            "community-chart-labels-value": @community_roles.keys.join(","),
+            "community-chart-data-value": @community_roles.values.join(",")
+          }
+        }
+      %div.custom-legend
+
+    .col-lg-4.d-flex.flex-column
+      %h3 Active Expeditions
+      .expedition-scroll-box.flex-grow-1
+        %ul.list-unstyled
+          - @active_expeditions.each do |exp|
+            %li.expedition-name= exp.name

@@ -1,0 +1,65 @@
+//application/_table
+-# locals: (tf:, items:)
+- edit = defined?(edit) ? edit : false
+
+%table.table.table-striped.table-bordered
+  %thead.thead-light
+    %tr
+      %th
+        %input#select_all{type: "checkbox",
+          data: {
+            controller: "bulk-action",
+            bulk_action_target: "selectAll",
+            action: "bulk-action#toggleAll"
+          }
+        }
+      - tf.values.each do |column|
+        - if column['sortable'] == false
+          %th= column['label']
+        - else
+          - sort_key = column['sort_key'] || column['name']
+          - direction = params[:direction] || 'asc'
+          - is_current = params[:sort] == sort_key
+          - arrow = is_current ? (direction == 'asc' ? '↑' : '↓') : '⇅'
+          %th
+            = link_to "#{column['label']} #{arrow}".html_safe, request.params.merge(sort: sort_key, direction: (is_current && direction == 'asc' ? 'desc' : 'asc')), { class: 'text-nowrap', title: 'Click to sort' }
+
+
+  %tbody
+    - items.each do |item|
+      - row_class = item.is_a?(User) && item.closed_to_outreach? ? 'user-row--restricted' : ''
+      %tr{ class: row_class }
+        %td
+          %input.bulk-checkbox{type: "checkbox",
+            name: "selected_ids[]",
+            value: item.id,
+            data: {
+              controller: "bulk-action",
+              bulk_action_target: "checkbox"
+            }
+          }
+        - tf.keys.each do |key|
+          - if key.to_s == 'owner'
+            %td= item.contact? ? item.owner&.full_name : '—'
+          - elsif tf[key]['as'] == 'link'
+            %td= link_to tf[key]['link_text'].call(item) || item[key], tf[key]['path'].call(item)
+          - elsif key.to_s == 'contact_permission' || key.to_s == 'is_contact_restricted'
+            - if item.contact?
+              %td
+                - if item.closed_to_outreach?
+                  %span.badge.bg-warning.text-dark.align-middle Closed
+                  %span.ms-1.text-warning{ title: 'Permission required', 'aria-label': 'Permission required' } ⚠︎
+                - else
+                  %span.badge.bg-success.align-middle Open
+            - else
+              %td —
+          - elsif tf[key]['type'] == 'boolean'
+            %td= item[key] ? 'Yes' : 'No'
+          - elsif tf[key]['value'].present?
+            - value = tf[key]['value'].call(item) rescue (tf[key]['fallback_to_sort_col'] ? item.try(:[], :sort_col) : nil)
+            %td= value
+          - else
+            %td= display_field_value(item, key)
+
+.text-center.mt-3
+  = will_paginate @items, params: request.query_parameters

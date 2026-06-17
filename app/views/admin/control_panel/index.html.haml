@@ -1,0 +1,13 @@
+%h1 Admin Panel
+
+%ul.nav.nav-tabs
+  %li.nav-item
+    = link_to "Choices", choices_path, class: "nav-link #{'active' if request.path.include?('choices')}"
+  %li.nav-item
+    = link_to "Action Logs", admin_logs_path, class: "nav-link #{'active' if request.path.include?('logs')}"
+
+.row.mt-4
+  - if request.path.include?('choices')
+    = render partial: 'choices'
+  - elsif request.path.include?('logs')
+    = render partial: 'logs'

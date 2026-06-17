@@ -1,0 +1,46 @@
+//activities/_phase_task_table
+-# locals: (tf:, items:, phase_id:)
+
+%table.table
+  %thead
+    %tr
+      %th
+        %input{type: "checkbox",
+          data: {
+            bulk_action_target: "selectAll",
+            action: "bulk-action#toggleAll",
+            phase: phase_id
+          }
+        }
+      - tf.values.each do |column|
+        %th= column['label']
+      %th
+      %th
+      %th
+
+  %tbody
+    - items.each do |item|
+      %tr
+        %td
+          %input.bulk-checkbox{type: "checkbox",
+            name: "selected_ids[]",
+            value: item.id,
+            data: {
+              bulk_action_target: "checkbox",
+              phase: phase_id
+            }
+          }
+        - tf.keys.each do |key|
+          - if tf[key]['as'] == 'link'
+            %td= link_to tf[key]['link_text'].call(item) || item[key], tf[key]['path'].call(item)
+          - elsif tf[key]['type'] == 'boolean'
+            %td= item[key] ? 'Yes' : 'No'
+          - elsif key == 'activity_type'
+            %td= item.activity_type_name
+          - elsif key == 'activity_status_type'
+            %td= item.activity_status_name
+          - else
+            %td= item.send(key.to_sym)
+        %td
+        %td
+        %td

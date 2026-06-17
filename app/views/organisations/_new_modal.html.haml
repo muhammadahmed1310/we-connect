@@ -1,0 +1,9 @@
+-# app/views/organisations/_new_modal.html.haml
+= simple_form_for Organisation.new, url: organisations_path do |f|
+  = f.input :name, required: true
+  = f.input :organisation_type, as: :select,
+    collection: Choice.select_options_for('organisation_type', label_as_value: true),
+    include_blank: true
+  = f.input :description
+  .text-end
+    = f.submit 'Create', class: 'btn btn-primary btn-sm'

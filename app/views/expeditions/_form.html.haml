@@ -1,0 +1,7 @@
+-# locals: (item:, parent:, edit:)
+
+= render "form_#{item.expedition_type&.downcase || 'group'}",
+         item: item,
+         parent: parent,
+         edit: edit
+
