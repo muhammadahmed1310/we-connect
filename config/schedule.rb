@@ -1,6 +1,6 @@
 set :output, File.join(Whenever.path, "log", "cron.log")
 env :PATH, '/usr/local/bin:/usr/sbin:/usr/bin'
-env :GEM_HOME, '/var/www/we-connect/shared/bundle/ruby/3.2.0'
+env :GEM_HOME, '/var/www/wehub/shared/bundle/ruby/3.2.0'
 
 # every 1.hour do
 #   rake "cron:hourly"

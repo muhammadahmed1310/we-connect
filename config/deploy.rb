@@ -11,13 +11,13 @@ set :git_http_password, ENV['GIT_HTTP_PASSWORD']
 
 set :branch, 'main'
 
-set :deploy_to, '/var/www/we-connect'
+set :deploy_to, '/var/www/wehub'
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/assets', 'public/system',
        'storage'
 
 set :local_user, -> { 'ubuntu' }
-set :ssh_options, { keys: %w[~/.ssh/we_connect_key] }
+set :ssh_options, { keys: %w[~/.ssh/womenemerging] }
 
 set :keep_releases, 5
 
