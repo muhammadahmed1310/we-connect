@@ -46,8 +46,8 @@
    sudo gem install bundler
 
 # Make a directory for the app
-   sudo mkdir -p /var/www/wehub
-   sudo chown ubuntu:ubuntu /var/www/wehub
+   sudo mkdir -p /var/www/we-connect
+   sudo chown ubuntu:ubuntu /var/www/we-connect
 
 # Add acme certbot
   sudo apt update
@@ -65,7 +65,7 @@
 
 # Setup default nginx site
   sudo rm /etc/nginx/sites-enabled/default
-  sudo cp /var/www/wehub/current/config/nginx80.conf /etc/nginx/sites-available/we
+  sudo cp /var/www/we-connect/current/config/nginx80.conf /etc/nginx/sites-available/we
   sudo ln -s /etc/nginx/sites-available/we /etc/nginx/sites-enabled/we
   sudo systemctl restart nginx
 
@@ -73,10 +73,10 @@
   acme.sh --issue -d connect.womenemerging.org --server letsencrypt --webroot /var/www/certbot
 
 # Copy the secure nginx config file to the sites enabled directory
-  sudo cp /var/www/wehub/current/config/nginx.conf /etc/nginx/sites-available/we
+  sudo cp /var/www/we-connect/current/config/nginx.conf /etc/nginx/sites-available/we
   sudo systemctl restart nginx
 
 
 # copy the alias.sh file to the server
-  cp /var/www/wehub/current/scripts/bash_aliases.sh /home/ubuntu/.bash_aliases
+  cp /var/www/we-connect/current/scripts/bash_aliases.sh /home/ubuntu/.bash_aliases
 

@@ -1,3 +1,4 @@
+# We Connect VM: we-connect-web (europe-west2-a)
 # server "connect.womenemerging.org", user: "ubuntu", roles: %w{app db web}
 server "35.197.248.94", user: "ubuntu", roles: %w{app db web}
 

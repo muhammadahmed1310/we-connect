@@ -1,5 +1,5 @@
 # For app
-alias cda='cd /var/www/wehub/current'
+alias cda='cd /var/www/we-connect/current'
 alias ber='RAILS_ENV=staging bundle exec rake'
 
 alias nginxRestart='sudo systemctl restart nginx.service'
