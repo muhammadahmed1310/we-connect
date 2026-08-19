@@ -3,7 +3,7 @@
     .modal-content
       .modal-header
         %h5.modal-title Add Filters
-        %button.btn-close{ type: "button", data: { bs_dismiss: "modal" }, aria: { label: "Close" } }
+        %button.btn-close.ms-auto{ type: "button", data: { bs_dismiss: "modal" }, aria: { label: "Close" } }
 
       .modal-body{ data: { controller: "filters" } }
         = form_with url: request.path, method: :get, local: true, html: { data: { filters_target: "form" } } do |f|
