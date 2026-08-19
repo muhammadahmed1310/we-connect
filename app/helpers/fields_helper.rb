@@ -31,6 +31,10 @@ module FieldsHelper
   def form_fields_for(item, parent: nil)
     fields = _construct_fields(field_names_for(item.class), item.class, parent: parent)
 
+    if item.is_a?(Organisation) && fields['description']
+      fields['description']['as'] = :text
+    end
+
     if item.is_a?(User)
       # Replace single organisation with multi-select Organisations (tom-select + quick-add)
       if fields['organisation']

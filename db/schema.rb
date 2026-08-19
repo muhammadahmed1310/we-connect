@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_08_115747) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_19_193000) do
   create_table "activities", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "expedition_id"
     t.bigint "expedition_phase_id"
@@ -190,7 +190,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_08_115747) do
 
   create_table "organisations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
-    t.string "description"
+    t.text "description"
     t.string "organisation_type"
     t.boolean "is_active", default: true
     t.datetime "created_at", null: false

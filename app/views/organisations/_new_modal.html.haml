@@ -4,6 +4,6 @@
   = f.input :organisation_type, as: :select,
     collection: Choice.select_options_for('organisation_type', label_as_value: true),
     include_blank: true
-  = f.input :description
+  = f.input :description, as: :text, input_html: { rows: 4 }
   .text-end
     = f.submit 'Create', class: 'btn btn-primary btn-sm'
