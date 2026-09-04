@@ -11,11 +11,12 @@ class HomeController < ApplicationController
     role_choice = Choice.find_by(name: 'user_role_type')
     role_ids = role_choice.choice_items.index_by(&:name)
 
-    fellow_id    = role_ids['fellow']&.id
-    explorer_id  = role_ids['explorer']&.id
-    sologoer_id  = role_ids['sologoer']&.id
+    fellow_id      = role_ids['fellow']&.id
+    explorer_id    = role_ids['explorer']&.id
+    sologoer_id    = role_ids['sologoer']&.id
+    basecamper_id  = role_ids['basecamper']&.id
 
-    explorer_role_ids = [fellow_id, explorer_id, sologoer_id].compact
+    explorer_role_ids = [fellow_id, explorer_id, sologoer_id, basecamper_id].compact
 
     # 🔹 Distinct explorer users
     @explorers = User.joins(:user_role_choice_items)
@@ -28,7 +29,8 @@ class HomeController < ApplicationController
     @explorer_roles_breakdown = {
       'Fellow'     => User.joins(:user_role_choice_items).where(user_role_choice_items: { choice_item_id: fellow_id }).distinct.count,
       'Explorer'   => User.joins(:user_role_choice_items).where(user_role_choice_items: { choice_item_id: explorer_id }).distinct.count,
-      'Sologoer'   => User.joins(:user_role_choice_items).where(user_role_choice_items: { choice_item_id: sologoer_id }).distinct.count
+      'Sologoer'   => User.joins(:user_role_choice_items).where(user_role_choice_items: { choice_item_id: sologoer_id }).distinct.count,
+      'Basecamper' => User.joins(:user_role_choice_items).where(user_role_choice_items: { choice_item_id: basecamper_id }).distinct.count
     }
 
     # 🔹 Direct role-based solo vs group count
@@ -40,6 +42,13 @@ class HomeController < ApplicationController
 
     @fellow_count = @explorers.joins(:user_role_choice_items)
                               .where(user_role_choice_items: { choice_item_id: fellow_id }).distinct.count
+
+    @basecamper_count = if basecamper_id
+                          @explorers.joins(:user_role_choice_items)
+                                    .where(user_role_choice_items: { choice_item_id: basecamper_id }).distinct.count
+                        else
+                          0
+                        end
 
     # 🔹 Community users: total users - explorers
     @community_users = User.where.not(id: @explorers.select(:id))
@@ -56,6 +65,7 @@ class HomeController < ApplicationController
     raw_role_counts.delete('Fellow')
     raw_role_counts.delete('Explorer')
     raw_role_counts.delete('Sologoer')
+    raw_role_counts.delete('Basecamper')
     @community_roles = { 'WE Staff' => we_staff_total }.merge(raw_role_counts)
 
 

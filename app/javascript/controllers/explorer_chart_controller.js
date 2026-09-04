@@ -1,29 +1,27 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+    static values = {
+        solo: Number,
+        group: Number,
+        fellow: Number,
+        basecamper: Number
+    }
+
     connect() {
-
-        console.log("*********************************************************");
-        console.log(Object.keys(this.element.dataset))
-        console.log(Object.values(this.element.dataset))
-        console.log("Stimulus values:", {
-            "solo": Object.values(this.element.dataset)[2],
-            "group": Object.values(this.element.dataset)[1]
-        })
-        console.log("*********************************************************");
-
-        const fellow = parseInt(Object.values(this.element.dataset)[1] || "0", 10)
-        const group = parseInt(Object.values(this.element.dataset)[2] || "0", 10)
-        const solo = parseInt(Object.values(this.element.dataset)[3] || "0", 10)
+        const solo = this.soloValue || 0
+        const group = this.groupValue || 0
+        const fellow = this.fellowValue || 0
+        const basecamper = this.basecamperValue || 0
 
         const ctx = this.element.getContext("2d")
-        const chart= new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Solo', 'Group', 'Fellow'],
+                labels: ['Solo', 'Group', 'Fellow', 'Basecamper'],
                 datasets: [{
-                    data: [solo, group,fellow],
-                    backgroundColor: ['#76cde1', '#2b3b69','#deaf07']
+                    data: [solo, group, fellow, basecamper],
+                    backgroundColor: ['#76cde1', '#2b3b69', '#deaf07', '#2d6a4f']
                 }]
             },
             options: {
