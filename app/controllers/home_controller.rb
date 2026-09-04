@@ -9,7 +9,8 @@ class HomeController < ApplicationController
     @expeditions = Expedition.where(is_skeleton: false)
     # 🔹 Role references
     role_choice = Choice.find_by(name: 'user_role_type')
-    role_ids = role_choice.choice_items.index_by(&:name)
+    # Production has mixed casing (e.g. "Basecamper"); normalize for lookups
+    role_ids = role_choice.choice_items.index_by { |item| item.name.to_s.downcase }
 
     fellow_id      = role_ids['fellow']&.id
     explorer_id    = role_ids['explorer']&.id
